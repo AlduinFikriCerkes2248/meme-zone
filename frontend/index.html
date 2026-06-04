@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,29 +10,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
 </head>
+
 <body>
     <header>
         <div class="header-content">
             <h1>🔥 Мемологія</h1>
-            <p>Найкраща колекція мемів в інтернеті</p>
+            <p>Найкраща колекція мемів команди 1П-24</p>
+            <div id="statsContainer" class="stats-badge">
+                ⏳ Завантаження статистики...
+            </div>
         </div>
     </header>
 
     <main>
-        <section class="hero-meme">
-            <div class="hero-text">
-                <h2>🏆 Мем дня</h2>
-                <p>Коли код запрацював з першого разу, але ти не знаєш чому:</p>
-            </div>
-            <div class="hero-image-wrapper">
-                <img src="https://i.imgflip.com/1bij.jpg" alt="Мем дня" class="featured-image">
-            </div>
-        </section>
-
         <section class="upload-section">
             <h2>✨ Додати новий мем</h2>
             <form id="addMemeForm">
-                <input type="url" id="memeUrl" placeholder="🔗 Вставте URL картинки" required>
+                <input type="url" id="memeUrl" placeholder="🔗 Вставте URL картинки (наприклад, з memegen.link)"
+                    required>
                 <select id="memeCategory" required>
                     <option value="" disabled selected>📂 Оберіть категорію...</option>
                     <option value="IT">IT 💻</option>
@@ -59,7 +55,7 @@
                         <option value="Крінж">Крінж 🤡</option>
                     </select>
                 </div>
-                
+
                 <div class="control-group">
                     <label for="sortOrder">Сортування:</label>
                     <select id="sortOrder">
@@ -72,7 +68,7 @@
         </section>
 
         <section id="memeGallery" class="gallery">
-            </section>
+        </section>
     </main>
 
     <footer>
@@ -81,4 +77,5 @@
 
     <script src="index.js"></script>
 </body>
+
 </html>

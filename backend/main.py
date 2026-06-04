@@ -1,8 +1,9 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Dict
 import random
+from collections import Counter
 
 app = FastAPI(
     title="Meme Gallery API",
@@ -26,6 +27,10 @@ class MemeCreate(BaseModel):
 class MemeResponse(MemeCreate):
     id: int = Field(..., description="Унікальний ідентифікатор мему")
 
+class StatsResponse(BaseModel):
+    total: int = Field(..., description="Загальна кількість мемів")
+    top_category: str = Field(..., description="Найпопулярніша категорія")
+
 
 db_memes: List[MemeResponse] = [
     MemeResponse(id=1, url="https://api.memegen.link/images/fine/code_has_100_errors/this_is_fine.png", category="IT"),
@@ -35,6 +40,18 @@ db_memes: List[MemeResponse] = [
     MemeResponse(id=5, url="https://api.memegen.link/images/drake/sleeping/playing_terraria_until_4_am.png", category="Ігри")
 ]
 current_id = 6
+
+
+@app.get("/memes/stats", response_model=StatsResponse, summary="Отримати статистику")
+def get_stats():
+    if not db_memes:
+        return StatsResponse(total=0, top_category="Немає")
+    
+    categories = [m.category for m in db_memes]
+    category_counts = Counter(categories)
+    top_category = category_counts.most_common(1)[0][0]
+    
+    return StatsResponse(total=len(db_memes), top_category=top_category)
 
 
 @app.get("/memes", response_model=List[MemeResponse], summary="Отримати меми з фільтрацією та сортуванням")
@@ -53,6 +70,7 @@ def get_memes(
         result.sort(key=lambda m: m.id, reverse=True) 
         
     return result
+
 
 @app.get("/memes/random", response_model=MemeResponse, summary="Отримати випадковий мем")
 def get_random_meme():
@@ -78,10 +96,14 @@ def create_meme(meme: MemeCreate):
     return new_meme
 
 
-@app.delete("/memes/{meme_id}", status_code=204, summary="Видалити мем")
-def delete_meme(meme_id: int):
-    for index, meme in enumerate(db_memes):
-        if meme.id == meme_id:
+class MemeDelete(BaseModel):
+    url: str = Field(..., description="Посилання на мем для видалення")
+
+
+@app.delete("/memes", status_code=204, summary="Видалити мем по URL")
+def delete_meme(meme: MemeDelete):
+    for index, m in enumerate(db_memes):
+        if m.url == meme.url:
             del db_memes[index]
             return
-    raise HTTPException(status_code=404, detail=f"Мем з ID {meme_id} не знайдено для видалення")
+    raise HTTPException(status_code=404, detail=f"Мем з URL {meme.url} не знайдено для видалення")

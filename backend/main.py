@@ -45,6 +45,10 @@ current_id = 6
 
 # --- ЕНДПОЇНТИ (ПРАВИЛЬНИЙ ПОРЯДОК) ---
 
+@app.get("/")
+def read_root():
+    return {"message": "API is running"}
+
 # 1. Статистика (Специфічний шлях — НАЙВИЩЕ)
 @app.get("/memes/stats", response_model=StatsResponse, summary="Отримати статистику")
 def get_stats():

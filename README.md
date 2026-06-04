@@ -12,7 +12,6 @@
 ## 🛠 Технології
 - **Backend:** FastAPI + SQLite
 - **Frontend:** Vanilla JS + Fetch API
-- **AI:** Anthropic Claude API
 
 ## 📁 Структура проєкту
 ## ⚙️ Запуск локально

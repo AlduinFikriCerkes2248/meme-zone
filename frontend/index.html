@@ -1,10 +1,84 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>МемЗона</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мемологія | Галерея Мемів</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <h1>МемЗона 🔥</h1>
+    <header>
+        <div class="header-content">
+            <h1>🔥 Мемологія</h1>
+            <p>Найкраща колекція мемів в інтернеті</p>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-meme">
+            <div class="hero-text">
+                <h2>🏆 Мем дня</h2>
+                <p>Коли код запрацював з першого разу, але ти не знаєш чому:</p>
+            </div>
+            <div class="hero-image-wrapper">
+                <img src="https://i.imgflip.com/1bij.jpg" alt="Мем дня" class="featured-image">
+            </div>
+        </section>
+
+        <section class="upload-section">
+            <h2>✨ Додати новий мем</h2>
+            <form id="addMemeForm">
+                <input type="url" id="memeUrl" placeholder="🔗 Вставте URL картинки" required>
+                <select id="memeCategory" required>
+                    <option value="" disabled selected>📂 Оберіть категорію...</option>
+                    <option value="IT">IT 💻</option>
+                    <option value="Коти">Коти 🐈</option>
+                    <option value="Навчання">Навчання 📚</option>
+                    <option value="Ігри">Ігри 🎮</option>
+                    <option value="Спорт">Спорт 🏋️‍♂️</option>
+                    <option value="Крінж">Крінж 🤡</option>
+                </select>
+                <button type="submit" class="btn-primary">Запустити мем 🚀</button>
+            </form>
+        </section>
+
+        <section class="controls">
+            <div class="control-filters">
+                <div class="control-group">
+                    <label for="categoryFilter">Фільтр:</label>
+                    <select id="categoryFilter">
+                        <option value="">Всі категорії 🌍</option>
+                        <option value="IT">IT 💻</option>
+                        <option value="Коти">Коти 🐈</option>
+                        <option value="Навчання">Навчання 📚</option>
+                        <option value="Ігри">Ігри 🎮</option>
+                        <option value="Спорт">Спорт 🏋️‍♂️</option>
+                        <option value="Крінж">Крінж 🤡</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="sortOrder">Сортування:</label>
+                    <select id="sortOrder">
+                        <option value="newest">Свіжак ⚡</option>
+                        <option value="oldest">Баян 🕰️</option>
+                    </select>
+                </div>
+            </div>
+            <button id="randomMemeBtn" class="btn-secondary">Випадковий мем 🎲</button>
+        </section>
+
+        <section id="memeGallery" class="gallery">
+            </section>
+    </main>
+
+    <footer>
+        <p>Розроблено командою 1П-24: Влас Лазебний, Максим Арзубов, Даніїл Літвинов 😎</p>
+    </footer>
+
+    <script src="index.js"></script>
 </body>
 </html>

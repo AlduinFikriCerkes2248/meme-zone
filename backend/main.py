@@ -1,14 +1,16 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict
+from typing import List, Optional
 import random
 from collections import Counter
+import os
+import uvicorn
 
 app = FastAPI(
     title="Meme Gallery API",
-    description="Адаптований бекенд для фронтенду сайту з мемами",
-    version="1.1.0"
+    description="Адаптований бекенд для фронтенду сайту з мемами (Ready for Render)",
+    version="1.1.5"
 )
 
 app.add_middleware(
@@ -19,7 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+# --- МОДЕЛІ ---
 class MemeCreate(BaseModel):
     url: str = Field(..., description="Посилання на картинку з мемом")
     category: str = Field(..., description="Категорія мему (IT, Коти, Навчання тощо)")
@@ -31,7 +33,7 @@ class StatsResponse(BaseModel):
     total: int = Field(..., description="Загальна кількість мемів")
     top_category: str = Field(..., description="Найпопулярніша категорія")
 
-
+# --- БАЗА ДАНИХ (У пам'яті) ---
 db_memes: List[MemeResponse] = [
     MemeResponse(id=1, url="https://api.memegen.link/images/fine/code_has_100_errors/this_is_fine.png", category="IT"),
     MemeResponse(id=2, url="https://api.memegen.link/images/rollsafe/cant_have_bugs/if_you_never_test_it.png", category="IT"),
@@ -41,7 +43,9 @@ db_memes: List[MemeResponse] = [
 ]
 current_id = 6
 
+# --- ЕНДПОЇНТИ (ПРАВИЛЬНИЙ ПОРЯДОК) ---
 
+# 1. Статистика (Специфічний шлях — НАЙВИЩЕ)
 @app.get("/memes/stats", response_model=StatsResponse, summary="Отримати статистику")
 def get_stats():
     if not db_memes:
@@ -53,7 +57,14 @@ def get_stats():
     
     return StatsResponse(total=len(db_memes), top_category=top_category)
 
+# 2. Рандомний мем (Специфічний шлях — ВИЩЕ за загальний /memes)
+@app.get("/memes/random", response_model=MemeResponse, summary="Отримати випадковий мем")
+def get_random_meme():
+    if not db_memes:
+        raise HTTPException(status_code=404, detail="У базі ще немає жодного мему")
+    return random.choice(db_memes)
 
+# 3. Загальний список (Динамічний шлях — НИЖЧЕ за /stats та /random)
 @app.get("/memes", response_model=List[MemeResponse], summary="Отримати меми з фільтрацією та сортуванням")
 def get_memes(
     sort: str = Query("newest", description="Сортування: 'newest' або 'oldest'"),
@@ -71,14 +82,7 @@ def get_memes(
         
     return result
 
-
-@app.get("/memes/random", response_model=MemeResponse, summary="Отримати випадковий мем")
-def get_random_meme():
-    if not db_memes:
-        raise HTTPException(status_code=404, detail="У базі ще немає жодного мему")
-    return random.choice(db_memes)
-
-
+# 4. Створення мему
 @app.post("/memes", response_model=MemeResponse, status_code=201, summary="Додати новий мем")
 def create_meme(meme: MemeCreate):
     global current_id
@@ -95,15 +99,17 @@ def create_meme(meme: MemeCreate):
     current_id += 1
     return new_meme
 
-
-class MemeDelete(BaseModel):
-    url: str = Field(..., description="Посилання на мем для видалення")
-
-
+# 5. Видалення мему (Перероблено на Query-параметр для безпеки HTTP DELETE)
 @app.delete("/memes", status_code=204, summary="Видалити мем по URL")
-def delete_meme(meme: MemeDelete):
+def delete_meme(url: str = Query(..., description="URL мему, який треба видалити")):
     for index, m in enumerate(db_memes):
-        if m.url == meme.url:
+        if m.url == url:
             del db_memes[index]
             return
-    raise HTTPException(status_code=404, detail=f"Мем з URL {meme.url} не знайдено для видалення")
+    raise HTTPException(status_code=404, detail="Мем з таким URL не знайдено")
+
+# Блок автозапуску для Render
+if __name__ == "__main__":
+    # Render передає порт у змінну оточення PORT, якщо її немає — беремо стандартний 8000
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)

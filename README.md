@@ -4,7 +4,10 @@
 Сайт для публікації та перегляду мемів з AI-підписами українською мовою.
 
 ## 🚀 Демо
-> Посилання буде додано після деплою
+
+- **Frontend (Живий сайт):** https://meme-zone-theta.vercel.app
+- **Backend API (Сервер):** https://meme-zone.onrender.com
+- **Swagger Документація (OpenAPI):** https://meme-zone.onrender.com/docs
 
 ## 🛠 Технології
 - **Backend:** FastAPI + SQLite

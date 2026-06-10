@@ -1,5 +1,5 @@
 // 🚀 Оновлено: тепер шле запити на реальний сервер Render замість localhost!
-const API_URL = 'https://meme-zone-1.onrender.com';
+const API_URL = 'https://meme-zone.onrender.com/';
 
 // 🔥 ЧИСТА БАЗА МЕМІВ (Доступна для всіх функцій як резерв) 🔥
 const testMemes = [
